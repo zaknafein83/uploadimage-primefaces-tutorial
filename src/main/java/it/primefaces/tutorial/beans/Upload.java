@@ -1,6 +1,7 @@
 package it.primefaces.tutorial.beans;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -8,7 +9,7 @@ import javax.inject.Named;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-@Named(value = "upload")
+@ManagedBean(name = "upload")
 @RequestScoped
 public class Upload {
 
