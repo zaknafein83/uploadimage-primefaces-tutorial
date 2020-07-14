@@ -2,10 +2,9 @@ package it.primefaces.tutorial;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class PrimefacesTutorial  extends SpringBootServletInitializer{
+public class PrimefacesTutorial  {
 
 	public static void main(String[] args) {
 

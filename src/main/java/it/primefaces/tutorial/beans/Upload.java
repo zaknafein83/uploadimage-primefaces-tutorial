@@ -6,7 +6,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.UploadedFile;
 
 @Named(value = "upload")
 @RequestScoped
