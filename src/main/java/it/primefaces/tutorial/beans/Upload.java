@@ -4,10 +4,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 @ManagedBean(name = "upload")
 @RequestScoped
@@ -24,12 +23,14 @@ public class Upload {
 	}
 
 	public void upload() {
+		//    <p:fileUpload value="#{upload.file}" mode="simple" skinSimple="true"/>
+
 		if (file != null) {
-			System.out.println("entro nell'if");
+			System.out.println("Yes, now you can save it on DB");
 			FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		} else {
-			System.out.println("null--");
+			System.out.println("We have a trouble");
 		}
 	}
 	
@@ -42,3 +43,12 @@ public class Upload {
 
 
 }
+/**
+
+
+    <p:fileUpload value="#{upload.file}" mode="simple" skinSimple="true"/>
+    <br />
+    
+    <p:commandButton value="Submit" ajax="false" action="#{upload.upload}"  />
+
+*/

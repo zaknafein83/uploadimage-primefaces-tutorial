@@ -8,15 +8,22 @@
 	<h:outputStylesheet name="static/primefaces.css" />
 	<h:head />
 	<h:body>
-<h:form enctype="multipart/form-data">
+<h:form id="myForm" enctype="multipart/form-data">
 
-    <p:fileUpload value="#{upload.file}" mode="simple" skinSimple="true"/>
+    <p:fileUpload listener="#{previewBean.handleFileUpload}" auto="true"  />
+    
+    
+                        <p:graphicImage id="image" 
+                        value="#{previewBean.content}" />
     <br />
-    <p:commandButton value="Submit" ajax="false" action="#{upload.upload}"  />
+    
 
 </h:form>
 
 
 	</h:body>
 </f:view>
+
+
+
 </html>
