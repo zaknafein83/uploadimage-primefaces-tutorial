@@ -2,7 +2,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:ui="http://liferay.com/tld/ui" xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://liferay.com/tld/ui" xmlns:p="http://primefaces.org/ui"
+	>
 
 <f:view contentType="text/html">
 	<h:outputStylesheet name="static/primefaces.css" />
@@ -12,11 +13,10 @@
 
     <p:fileUpload listener="#{previewBean.handleFileUpload}" auto="true"  />
     
-    
-                        <p:graphicImage id="image" 
-                        value="#{previewBean.content}" />
-    <br />
-    
+<ui:fragment rendered="#{not empty previewBean.file}">
+    <img src="data:image/png;base64,#{previewBean.imageContentsAsBase64}" />
+</ui:fragment>
+
 
 </h:form>
 

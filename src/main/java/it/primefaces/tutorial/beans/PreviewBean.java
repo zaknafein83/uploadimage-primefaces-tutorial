@@ -1,36 +1,45 @@
 package it.primefaces.tutorial.beans;
 
-import javax.faces.bean.ViewScoped;
-import javax.inject.Named;
+import java.util.Base64;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-@Named
-@ViewScoped
+@ManagedBean
+@RequestScoped
 public class PreviewBean {
 
 	private UploadedFile file;
-	private byte[] content;
+	private byte[] image;
 
 	public void handleFileUpload(FileUploadEvent event) {
-		file = event.getFile();
-		System.out.println("siamo qui " + file.getFileName());
+		setFile(event.getFile());
+		System.out.println("File Name " + getFile().getFileName());
 
-		setContent(file.getContent());
-
-		
-		
-		
-
+		setImage(getFile().getContent());
 	}
 
-	public byte[] getContent() {
-		return content;
+	public String getImageContentsAsBase64() {
+	    return Base64.getEncoder().encodeToString(image);
 	}
 
-	public void setContent(byte[] content) {
-		this.content = content;
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 }
