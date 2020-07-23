@@ -1,45 +1,102 @@
 package it.primefaces.tutorial.beans;
 
-import java.util.Base64;
+import java.io.ByteArrayInputStream;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
+import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.CroppedImage;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
-@ManagedBean
-@RequestScoped
+@Named
+@SessionScoped
 public class PreviewBean {
+    
+    private CroppedImage croppedImage;
+    
+    private UploadedFile originalImageFile;
 
-	private UploadedFile file;
-	private byte[] image;
+    public CroppedImage getCroppedImage() {
+        return croppedImage;
+    }
 
-	public void handleFileUpload(FileUploadEvent event) {
-		setFile(event.getFile());
-		System.out.println("File Name " + getFile().getFileName());
+    public void setCroppedImage(CroppedImage croppedImage) {
+        this.croppedImage = croppedImage;
+    }
+    
+    public UploadedFile getOriginalImageFile() {
+        return originalImageFile;
+    }
+    
+    public void handleFileUpload(FileUploadEvent event) {
+        this.originalImageFile = null;
+        this.croppedImage = null;
+        UploadedFile file = event.getFile();
+        if(file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
+            this.originalImageFile = file;
+            System.out.println("ho settato il file");
+        }
+    }
 
-		setImage(getFile().getContent());
-	}
+    public void crop() {
+        if(this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
+        	System.out.println("errore nel cropping");
+        }
+        else {
+        	System.out.println("successo nel cropping");
+        }
+    }
+    
+    public StreamedContent getImage() {
+        
+        FacesContext context = FacesContext.getCurrentInstance();
 
-	public String getImageContentsAsBase64() {
-	    return Base64.getEncoder().encodeToString(image);
-	}
+        System.out.println("Passiamo nel getImage");
+        StreamedContent result = null;
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.originalImageFile == null
+                || this.originalImageFile.getContent() == null || this.originalImageFile.getContent().length == 0) {
+        	System.out.println("Passiamo nel getImage - Render Phase con originalImageFile == Null");
+            result = new DefaultStreamedContent();
+        }
+        else {
+        	System.out.println("Passiamo nel getImage - Render Phase");
+            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
+                try {
+                    return new ByteArrayInputStream(this.originalImageFile.getContent());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }).build();
+        }
+        
+        return result;
+    }
 
-	public UploadedFile getFile() {
-		return file;
-	}
+    public StreamedContent getCropped() {
+        
+        FacesContext context = FacesContext.getCurrentInstance();
 
-	public void setFile(UploadedFile file) {
-		this.file = file;
-	}
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
-}
+        StreamedContent result = null;
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.croppedImage == null
+                || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
+            result = new DefaultStreamedContent();
+        }
+        else {
+            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
+                try {
+                    return new ByteArrayInputStream(this.croppedImage.getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }).build();
+        }
+        
+        return result;
+    }}
