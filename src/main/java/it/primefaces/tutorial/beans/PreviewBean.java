@@ -16,43 +16,43 @@ import org.primefaces.model.file.UploadedFile;
 @Named
 @SessionScoped
 public class PreviewBean {
-    
-    private CroppedImage croppedImage;
-    
-    private UploadedFile originalImageFile;
 
-    public CroppedImage getCroppedImage() {
-        return croppedImage;
-    }
+	private CroppedImage croppedImage;
 
-    public void setCroppedImage(CroppedImage croppedImage) {
-        this.croppedImage = croppedImage;
-    }
-    
-    public UploadedFile getOriginalImageFile() {
-        return originalImageFile;
-    }
-    
-    public void handleFileUpload(FileUploadEvent event) {
-        this.originalImageFile = null;
-        this.croppedImage = null;
-        UploadedFile file = event.getFile();
-        if(file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
-            this.originalImageFile = file;
-            System.out.println("ho settato il file");
-        }
-    }
+	private UploadedFile originalImageFile;
 
-    public void crop() {
-        if(this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
-        	System.out.println("errore nel cropping");
-        }
-        else {
-        	System.out.println("successo nel cropping");
-        }
-    }
-    
-    public StreamedContent getImage() {
+	public CroppedImage getCroppedImage() {
+		return croppedImage;
+	}
+
+	public void setCroppedImage(CroppedImage croppedImage) {
+		this.croppedImage = croppedImage;
+	}
+
+	public UploadedFile getOriginalImageFile() {
+		return originalImageFile;
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+		this.originalImageFile = null;
+		this.croppedImage = null;
+		UploadedFile file = event.getFile();
+		if (file != null && file.getContent() != null && file.getContent().length > 0 && file.getFileName() != null) {
+			this.originalImageFile = file;
+			System.out.println("ho settato il file");
+		}
+	}
+
+	public void crop() {
+		if (this.croppedImage == null || this.croppedImage.getBytes() == null
+				|| this.croppedImage.getBytes().length == 0) {
+			System.out.println("errore nel cropping");
+		} else {
+			System.out.println("successo nel cropping");
+		}
+	}
+
+	public StreamedContent getImage() {
         
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -65,38 +65,24 @@ public class PreviewBean {
         }
         else {
         	System.out.println("Passiamo nel getImage - Render Phase");
-            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
-                try {
-                    return new ByteArrayInputStream(this.originalImageFile.getContent());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }).build();
+        	result = new DefaultStreamedContent(new ByteArrayInputStream(this.originalImageFile.getContent()),this.originalImageFile.getContentType());
         }
-        
         return result;
     }
 
-    public StreamedContent getCropped() {
-        
-        FacesContext context = FacesContext.getCurrentInstance();
+	public StreamedContent getCropped() {
 
-        StreamedContent result = null;
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.croppedImage == null
-                || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
-            result = new DefaultStreamedContent();
-        }
-        else {
-            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
-                try {
-                    return new ByteArrayInputStream(this.croppedImage.getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }).build();
-        }
-        
-        return result;
-    }}
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		StreamedContent result = null;
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.croppedImage == null
+				|| this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
+			result = new DefaultStreamedContent();
+		} else {
+			result = new DefaultStreamedContent(new ByteArrayInputStream(this.originalImageFile.getContent()),
+					this.originalImageFile.getContentType());
+		}
+
+		return result;
+	}
+}
