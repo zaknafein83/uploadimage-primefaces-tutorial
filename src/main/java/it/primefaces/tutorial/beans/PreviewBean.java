@@ -56,31 +56,48 @@ public class PreviewBean {
         
         FacesContext context = FacesContext.getCurrentInstance();
 
-        System.out.println("Passiamo nel getImage");
         StreamedContent result = null;
         if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.originalImageFile == null
                 || this.originalImageFile.getContent() == null || this.originalImageFile.getContent().length == 0) {
-        	System.out.println("Passiamo nel getImage - Render Phase con originalImageFile == Null");
             result = new DefaultStreamedContent();
         }
         else {
-        	System.out.println("Passiamo nel getImage - Render Phase");
-        	result = new DefaultStreamedContent(new ByteArrayInputStream(this.originalImageFile.getContent()),this.originalImageFile.getContentType());
+        	
+            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
+                try {
+                    return new ByteArrayInputStream(this.originalImageFile.getContent());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }).build();
+
+        	 
+//			result = new DefaultStreamedContent(new ByteArrayInputStream(this.originalImageFile.getContent()),
+//					this.originalImageFile.getContentType());
         }
         return result;
     }
 
 	public StreamedContent getCropped() {
-
 		FacesContext context = FacesContext.getCurrentInstance();
-
 		StreamedContent result = null;
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE || this.croppedImage == null
 				|| this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
 			result = new DefaultStreamedContent();
 		} else {
-			result = new DefaultStreamedContent(new ByteArrayInputStream(this.originalImageFile.getContent()),
-					this.originalImageFile.getContentType());
+            result = DefaultStreamedContent.builder().contentType(this.originalImageFile.getContentType()).stream(() -> {
+                try {
+                    return new ByteArrayInputStream(this.croppedImage.getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }).build();
+
+
+//			result = new DefaultStreamedContent(new ByteArrayInputStream(this.croppedImage.getBytes()),
+//					this.originalImageFile.getContentType());
 		}
 
 		return result;

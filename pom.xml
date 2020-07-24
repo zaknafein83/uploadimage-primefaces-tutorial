@@ -45,7 +45,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-<!-- https://mvnrepository.com/artifact/org.primefaces.themes/all-themes -->
+		<!-- https://mvnrepository.com/artifact/org.primefaces.themes/all-themes -->
 
 		<dependency>
 			<groupId>com.github.primefaces</groupId>
@@ -61,6 +61,7 @@
 			<type>pom</type>
 		</dependency>
 	</dependencies>
+	
 	<repositories>
 		<repository>
 			<id>jitpack.io</id>
